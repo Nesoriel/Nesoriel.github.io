@@ -1,0 +1,37 @@
+{
+  "name": "nesoriel-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:github": "cross-env SITE_URL=https://nesoriel.com SITE_NAME=Nesoriel SITE_DOMAIN=nesoriel.com SITE_TARGET=global astro build && node scripts/write-cname.mjs nesoriel.com",
+    "build:edgeone": "cross-env SITE_URL=https://nesoriel.cn SITE_NAME=Nesoriel SITE_DOMAIN=nesoriel.cn SITE_TARGET=cn astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/check": "latest",
+    "@astrojs/mdx": "latest",
+    "@astrojs/rss": "latest",
+    "@astrojs/sitemap": "latest",
+    "@tailwindcss/vite": "latest",
+    "astro": "^6.4.4",
+    "cross-env": "^10.1.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/parser": "^8.60.1",
+    "eslint": "^10.4.1",
+    "eslint-plugin-astro": "^1.7.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript-eslint": "^8.60.1"
+  },
+  "packageManager": "pnpm@10.0.0"
+}
