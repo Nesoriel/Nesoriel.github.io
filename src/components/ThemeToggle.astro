@@ -1,0 +1,62 @@
+---
+import type { Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const labels = getUi(locale).theme;
+---
+
+<div class="relative" data-theme-toggle data-theme-labels={JSON.stringify(labels)}>
+  <button class="focus-ring inline-flex h-10 items-center gap-2 rounded-md border border-site-border bg-site-bg-soft px-3 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" type="button" aria-label={labels.toggle} data-theme-button>
+    <span data-theme-icon>◐</span>
+    <span class="hidden sm:inline" data-theme-label>{labels.dark}</span>
+  </button>
+  <div class="absolute right-0 top-12 z-50 hidden w-36 rounded-lg border border-site-border bg-site-bg-soft p-1 shadow-2xl" data-theme-menu>
+    {['dark', 'light', 'system'].map((theme) => (
+      <button class="focus-ring flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-site-muted transition hover:bg-site-bg hover:text-site" type="button" data-theme-option={theme}>
+        <span>{theme === 'dark' ? labels.dark : theme === 'light' ? labels.light : labels.system}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const wrapper = document.querySelector('[data-theme-toggle]');
+  const button = wrapper?.querySelector('[data-theme-button]');
+  const menu = wrapper?.querySelector('[data-theme-menu]');
+  const label = wrapper?.querySelector('[data-theme-label]');
+  const icon = wrapper?.querySelector('[data-theme-icon]');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const labels = JSON.parse((wrapper as HTMLElement)?.dataset.themeLabels || '{}') as Record<string, string>;
+
+  const applyTheme = (theme: string) => {
+    const resolved = theme === 'system' ? (media.matches ? 'dark' : 'light') : theme;
+    root.classList.toggle('dark', resolved === 'dark');
+    root.classList.toggle('light', resolved === 'light');
+    root.dataset.theme = theme;
+    if (label) label.textContent = labels[theme] || theme[0].toUpperCase() + theme.slice(1);
+    if (icon) icon.textContent = resolved === 'dark' ? '☾' : '☼';
+  };
+
+  applyTheme(localStorage.getItem('theme') || 'dark');
+  button?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+  wrapper?.querySelectorAll('[data-theme-option]').forEach((option) => {
+    option.addEventListener('click', () => {
+      const theme = (option as HTMLElement).dataset.themeOption || 'dark';
+      localStorage.setItem('theme', theme);
+      applyTheme(theme);
+      menu?.classList.add('hidden');
+    });
+  });
+  media.addEventListener('change', () => {
+    if ((localStorage.getItem('theme') || 'dark') === 'system') applyTheme('system');
+  });
+  document.addEventListener('click', (event) => {
+    if (wrapper && !wrapper.contains(event.target as Node)) menu?.classList.add('hidden');
+  });
+</script>

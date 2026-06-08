@@ -1,0 +1,67 @@
+---
+import { localizedPath, stripLocaleFromPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  locale: Locale;
+  canonicalPath: string;
+}
+
+const { locale, canonicalPath } = Astro.props;
+const t = getUi(locale);
+const currentPath = stripLocaleFromPath(Astro.url.pathname);
+const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="sticky top-0 z-40 border-b border-site-border/70 bg-site-bg/86 backdrop-blur-xl">
+  <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+    <a href={localizedPath(locale, '/')} class="focus-ring flex items-center gap-3 rounded-lg" aria-label={t.header.homeLabel}>
+      <span class="grid h-9 w-9 place-items-center rounded-lg border border-site-border bg-site-bg-soft text-sm font-semibold text-site">N</span>
+      <span class="leading-none">
+        <span class="block font-semibold tracking-[-0.02em]">Nesoriel</span>
+        <span class="hidden text-[0.65rem] uppercase tracking-[0.18em] text-site-subtle sm:block">{t.header.labLabel}</span>
+      </span>
+    </a>
+    <nav class="hidden items-center gap-1 md:flex" aria-label={t.header.navLabel}>
+      {t.nav.map((item) => (
+        <a
+          href={localizedPath(locale, item.href)}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+          class:list={[
+            'focus-ring rounded-md px-3 py-2 text-sm transition',
+            isActive(item.href) ? 'bg-site-bg-soft text-site ring-1 ring-site-border' : 'text-site-muted hover:bg-site-bg-soft hover:text-site',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href={localizedPath(locale, '/search/')} class="focus-ring hidden h-10 items-center rounded-md border border-site-border bg-site-bg-soft px-3 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site sm:inline-flex">{t.common.search}</a>
+      <div class="hidden sm:block"><LanguageSwitcher locale={locale} path={canonicalPath} /></div>
+      <ThemeToggle locale={locale} />
+      <button class="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-md border border-site-border bg-site-bg-soft text-site-muted md:hidden" type="button" aria-label={t.header.openNav} aria-expanded="false" data-mobile-nav-button>☰</button>
+    </div>
+  </div>
+  <nav class="hidden border-t border-site-border px-5 py-3 md:hidden" aria-label={t.header.mobileNavLabel} data-mobile-nav>
+    <div class="mx-auto flex max-w-7xl flex-col gap-2">
+      {t.nav.map((item) => (
+        <a href={localizedPath(locale, item.href)} class="focus-ring rounded-md px-3 py-2 text-sm text-site-muted hover:bg-site-bg-soft hover:text-site">{item.label}</a>
+      ))}
+      <a href={localizedPath(locale, '/search/')} class="focus-ring rounded-md px-3 py-2 text-sm text-site-muted hover:bg-site-bg-soft hover:text-site">{t.common.search}</a>
+      <div class="px-3 pt-2"><LanguageSwitcher locale={locale} path={canonicalPath} /></div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const navButton = document.querySelector('[data-mobile-nav-button]');
+  const mobileNav = document.querySelector('[data-mobile-nav]');
+  navButton?.addEventListener('click', () => {
+    const isOpen = navButton.getAttribute('aria-expanded') === 'true';
+    navButton.setAttribute('aria-expanded', String(!isOpen));
+    mobileNav?.classList.toggle('hidden', isOpen);
+  });
+</script>

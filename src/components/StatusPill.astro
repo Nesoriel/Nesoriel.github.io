@@ -1,0 +1,9 @@
+---
+import type { Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import type { ProjectEntry } from '../lib/content';
+interface Props { status: ProjectEntry['data']['status']; locale: Locale; }
+const color = { active: 'text-site-cyan border-site-cyan/35 bg-site-cyan/10', idea: 'text-site-accent border-site-accent/35 bg-site-accent/10', paused: 'text-amber-300 border-amber-300/30 bg-amber-300/10', archived: 'text-site-subtle border-site-border bg-site-bg' }[Astro.props.status];
+const t = getUi(Astro.props.locale);
+---
+<span class:list={['inline-flex rounded-full border px-2.5 py-1 text-xs font-medium', color]}>{t.status[Astro.props.status]}</span>

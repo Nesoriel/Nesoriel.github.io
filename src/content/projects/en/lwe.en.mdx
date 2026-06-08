@@ -1,0 +1,37 @@
+---
+locale: en
+translationKey: lwe
+title: LWE
+slug: lwe
+description: A lightweight web execution environment experiment for edge-oriented static assets, routing rules, and observable build artifacts.
+longDescription: LWE explores how to organize edge-side web capabilities with minimal runtime assumptions so projects can move between GitHub Pages, EdgeOne Pages, and ordinary static hosting.
+status: active
+featured: true
+tags: [Edge, Static Web, Infrastructure]
+techStack: [TypeScript, Astro, Vite]
+repoUrl: https://github.com/Nesoriel/lwe
+docsUrl: /projects/lwe/
+startedAt: 2025-01-18
+updatedAt: 2026-05-20
+visibility: public
+---
+
+## Background
+
+LWE, short for Lightweight Web Environment, is Nesoriel's long-running experiment around the boundary between static web output and edge hosting. It does not try to disguise static sites as full backend applications. Instead, it organizes routing, build artifacts, cache behavior, and observable deployment records into conventions that can be inspected.
+
+## Current Focus
+
+- Keep output directories compatible with ordinary static hosting.
+- Limit environment differences to build-time configuration rather than runtime branching.
+- Preserve stable interfaces for deployment records, sitemap output, and search indexes.
+
+```ts
+export interface StaticArtifact {
+  path: string;
+  contentType: string;
+  immutable: boolean;
+}
+```
+
+LWE is still in active design. The implementation in the repository is expected to serve the Nesoriel website first, then become reusable where the constraints prove useful.

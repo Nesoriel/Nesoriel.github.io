@@ -1,0 +1,84 @@
+---
+import BackgroundTexture from '../components/BackgroundTexture.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import {
+  absoluteLocalizedUrl,
+  absoluteUrl,
+  localeConfig,
+  localeFromPath,
+  siteConfig,
+  stripLocaleFromPath,
+  supportedLocales,
+  type Locale,
+} from '../config/site';
+import { getUi } from '../i18n/ui';
+import '../styles/global.css';
+
+interface Props {
+  locale?: Locale;
+  title?: string;
+  description?: string;
+  canonical?: string;
+  canonicalPath?: string;
+  type?: 'website' | 'article';
+}
+
+const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
+const t = getUi(locale);
+const canonicalPath = Astro.props.canonicalPath ?? stripLocaleFromPath(Astro.url.pathname);
+const title = Astro.props.title ? `${Astro.props.title} · ${siteConfig.name}` : siteConfig.name;
+const description = Astro.props.description ?? t.siteDescription;
+const canonical = Astro.props.canonical ?? absoluteLocalizedUrl(locale, canonicalPath);
+const type = Astro.props.type ?? 'website';
+const ogImage = absoluteUrl('/assets/nesoriel-lab-map.webp');
+---
+
+<!doctype html>
+<html lang={localeConfig[locale].htmlLang} class="dark" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme') || 'dark';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const resolved = stored === 'system' ? (prefersDark ? 'dark' : 'light') : stored;
+        document.documentElement.classList.toggle('light', resolved === 'light');
+        document.documentElement.classList.toggle('dark', resolved === 'dark');
+        document.documentElement.dataset.theme = stored;
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {supportedLocales.map((alternateLocale) => (
+      <link
+        rel="alternate"
+        hreflang={localeConfig[alternateLocale].htmlLang}
+        href={absoluteLocalizedUrl(alternateLocale, canonicalPath)}
+      />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={absoluteLocalizedUrl(siteConfig.defaultLocale, canonicalPath)} />
+    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} ${t.common.rss}`} href={absoluteLocalizedUrl(locale, '/rss.xml')} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content={localeConfig[locale].ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body>
+    <BackgroundTexture />
+    <Header locale={locale} canonicalPath={canonicalPath} />
+    <main>
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

@@ -1,0 +1,47 @@
+---
+import { render } from 'astro:content';
+import TagPill from '../components/TagPill.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, readingTime, type NoteEntry } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  note: NoteEntry;
+  previous?: NoteEntry;
+  next?: NoteEntry;
+}
+
+const { locale, note, previous, next } = Astro.props;
+const t = getUi(locale);
+const { Content, headings } = await render(note);
+---
+
+<BaseLayout locale={locale} title={note.data.title} description={note.data.description} type="article" canonicalPath={`/notes/${note.data.slug}/`}>
+  <article class="mx-auto grid w-full max-w-7xl gap-10 px-5 py-20 sm:px-6 lg:grid-cols-[1fr_18rem] lg:px-8">
+    <div>
+      <p class="text-sm font-medium uppercase tracking-[0.22em] text-site-accent">{note.data.category}</p>
+      <h1 class="mt-4 text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">{note.data.title}</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-site-muted">{note.data.description}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-site-subtle">
+        <span>{formatDate(note.data.publishedAt, locale)}</span><span aria-hidden="true">·</span><span>{readingTime(note.body, locale)}</span>
+        {note.data.updatedAt && <><span aria-hidden="true">·</span><span>{t.common.updated} {formatDate(note.data.updatedAt, locale)}</span></>}
+      </div>
+      <div class="mt-5 flex flex-wrap gap-2">{note.data.tags.map((tag) => <TagPill label={tag} />)}</div>
+      <div class="prose-content mt-12"><Content /></div>
+      <nav class="mt-14 grid gap-4 border-t border-site-border pt-8 sm:grid-cols-2" aria-label={t.notes.previousNextLabel}>
+        {previous ? <a class="surface-card rounded-lg p-5 text-sm text-site-muted hover:text-site" href={localizedPath(locale, `/notes/${previous.data.slug}/`)}><span class="text-site-subtle">{t.common.previous}</span><br />{previous.data.title}</a> : <span></span>}
+        {next && <a class="surface-card rounded-lg p-5 text-right text-sm text-site-muted hover:text-site" href={localizedPath(locale, `/notes/${next.data.slug}/`)}><span class="text-site-subtle">{t.common.next}</span><br />{next.data.title}</a>}
+      </nav>
+    </div>
+    <aside class="hidden lg:block lg:sticky lg:top-24 lg:self-start">
+      <div class="surface-card rounded-lg p-5">
+        <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.common.tableOfContents}</p>
+        <nav class="mt-4 flex flex-col gap-2 text-sm text-site-muted">
+          {headings.filter((heading) => heading.depth === 2 || heading.depth === 3).map((heading) => <a class:list={['hover:text-site', heading.depth === 3 && 'pl-4 text-site-subtle']} href={`#${heading.slug}`}>{heading.text}</a>)}
+        </nav>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>

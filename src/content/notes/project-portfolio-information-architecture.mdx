@@ -1,0 +1,35 @@
+---
+locale: zh-cn
+translationKey: project-portfolio-information-architecture
+title: 开源项目作品集的信息架构设计
+slug: project-portfolio-information-architecture
+description: 说明 Nesoriel 如何组织项目状态、标签、技术栈和链接，让作品集既可浏览又可维护。
+publishedAt: 2026-06-02
+tags: [Information Architecture, Portfolio, Content]
+category: Design
+draft: false
+featured: false
+---
+
+## 作品集不是展示墙
+
+开源组织的项目页不应该只是 logo 和一句口号。它需要帮助访问者判断项目是否活跃、解决什么问题、使用了哪些技术，以及下一步应该去哪里。
+
+## 核心字段
+
+Nesoriel 的项目集合保留以下信息：
+
+| 字段 | 用途 |
+| --- | --- |
+| status | 描述项目阶段 |
+| tags | 表达问题领域 |
+| techStack | 表达技术实现 |
+| repoUrl / demoUrl / docsUrl | 提供行动入口 |
+
+## 筛选维度
+
+项目列表支持状态、标签和技术栈筛选。筛选逻辑完全在浏览器中执行，依赖构建时渲染出的数据属性，不需要后端服务。
+
+## 精选排序
+
+精选项目优先展示，但不会隐藏非精选项目。这样首页可以保持聚焦，项目页仍然保留完整视图。

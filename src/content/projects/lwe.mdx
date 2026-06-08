@@ -1,0 +1,37 @@
+---
+locale: zh-cn
+translationKey: lwe
+title: LWE
+slug: lwe
+description: 面向边缘节点的轻量级 Web 执行环境实验，关注静态资产、路由规则与可观测构建产物。
+longDescription: LWE 探索如何用极少的运行时假设组织边缘侧 Web 能力，使项目可以在 GitHub Pages、EdgeOne Pages 以及普通静态托管之间迁移。
+status: active
+featured: true
+tags: [Edge, Static Web, Infrastructure]
+techStack: [TypeScript, Astro, Vite]
+repoUrl: https://github.com/Nesoriel/lwe
+docsUrl: /projects/lwe/
+startedAt: 2025-01-18
+updatedAt: 2026-05-20
+visibility: public
+---
+
+## 项目背景
+
+LWE（Lightweight Web Environment）是 Nesoriel 对静态 Web 与边缘托管边界的长期实验。它不试图把静态站点伪装成完整后端，而是把路由、构建产物、缓存策略与可观测信息整理成可审计的约定。
+
+## 当前关注点
+
+- 输出目录保持普通静态结构，便于迁移到不同平台。
+- 将环境差异限制在构建期配置，而不是运行时判断。
+- 为部署记录、站点地图和搜索索引保留稳定接口。
+
+```ts
+export interface StaticArtifact {
+  path: string;
+  contentType: string;
+  immutable: boolean;
+}
+```
+
+LWE 仍处在活跃设计阶段，仓库中的实现会优先服务 Nesoriel 官网本身。

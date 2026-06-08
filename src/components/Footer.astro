@@ -1,0 +1,34 @@
+---
+import { localizedPath, siteConfig, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getUi(locale);
+---
+
+<footer class="border-t border-site-border">
+  <div class="mx-auto grid w-full max-w-7xl gap-8 px-5 py-10 sm:px-6 md:grid-cols-[1.2fr_0.8fr_1fr] lg:px-8">
+    <div>
+      <div class="mb-3 flex items-center gap-3">
+        <span class="grid h-9 w-9 place-items-center rounded-lg border border-site-border bg-site-bg-soft text-sm font-semibold">N</span>
+        <span class="font-semibold">Nesoriel</span>
+      </div>
+      <p class="max-w-sm text-sm leading-6 text-site-muted">{t.footer.description}</p>
+    </div>
+    <nav class="flex flex-col gap-2 text-sm text-site-muted" aria-label={t.header.navLabel}>
+      {t.nav.map((item) => <a class="transition hover:text-site" href={localizedPath(locale, item.href)}>{item.label}</a>)}
+      <a class="transition hover:text-site" href={localizedPath(locale, '/rss.xml')}>{t.common.rss}</a>
+    </nav>
+    <div class="text-sm leading-6 text-site-muted md:text-right">
+      <p>{t.footer.domain}: {siteConfig.domain}</p>
+      <p>{t.footer.stack}</p>
+      {siteConfig.icpRecord && <p><a class="hover:text-site" href="https://beian.miit.gov.cn/" rel="noopener noreferrer" target="_blank">{siteConfig.icpRecord}</a></p>}
+      {siteConfig.psbRecord && <p>{siteConfig.psbRecord}</p>}
+    </div>
+  </div>
+  <div class="border-t border-site-border px-5 py-5 text-center text-xs text-site-subtle">© {new Date().getFullYear()} Nesoriel. {t.footer.contentRule}</div>
+</footer>

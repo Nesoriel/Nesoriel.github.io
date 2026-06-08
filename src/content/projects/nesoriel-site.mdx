@@ -1,0 +1,28 @@
+---
+locale: zh-cn
+translationKey: nesoriel-site
+title: Nesoriel Site
+slug: nesoriel-site
+description: Nesoriel 官方网站本身，使用 Astro、MDX 与 Content Collections 构建，同源代码部署到两个域名。
+longDescription: Nesoriel Site 是组织官网和部署规范的参考实现，强调静态输出、双站点同内容、可维护的信息架构和低运行成本。
+status: active
+featured: true
+tags: [Website, Documentation, Open Source]
+techStack: [Astro, TypeScript, Tailwind CSS, MDX]
+repoUrl: https://github.com/Nesoriel/Nesoriel.github.io
+demoUrl: /
+docsUrl: /notes/
+startedAt: 2026-01-05
+updatedAt: 2026-06-08
+visibility: public
+---
+
+## 项目定位
+
+Nesoriel Site 是组织官网、项目作品集和技术记录的统一入口。它被设计为一个完全静态的网站，不依赖数据库、后端服务或第三方搜索。
+
+## 双站点约束
+
+同一份代码会构建到 `nesoriel.com` 与 `nesoriel.cn`。两个站点共享首页、项目、Notes 和关于页，差异只来自环境变量：域名、canonical、sitemap、Open Graph URL、CNAME 和备案信息。
+
+这种约束让内容维护保持简单，也避免了运行时根据地区或访问方式切换内容的风险。

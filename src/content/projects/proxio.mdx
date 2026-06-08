@@ -1,0 +1,30 @@
+---
+locale: zh-cn
+translationKey: proxio
+title: Proxio
+slug: proxio
+description: 一个用于描述代理规则、连接拓扑和诊断信息的配置模型原型。
+longDescription: Proxio 关注网络代理配置的可读性和可移植性，希望用清晰的数据结构替代不可维护的散落脚本。
+status: idea
+featured: true
+tags: [Networking, Configuration, Tooling]
+techStack: [TypeScript, YAML, CLI]
+repoUrl: https://github.com/Nesoriel/proxio
+startedAt: 2025-08-03
+updatedAt: 2026-04-12
+visibility: public
+---
+
+## 为什么需要 Proxio
+
+代理配置经常同时包含环境、策略、节点、诊断与例外规则。随着设备和网络场景增加，简单复制配置文件会迅速失控。
+
+Proxio 试图提供一个更稳定的描述层：规则可以被检查、组合、渲染到不同目标格式，也可以被文档化。
+
+## 设计原则
+
+1. 配置应当可以被人类阅读。
+2. 生成结果必须可追踪到源规则。
+3. 诊断信息不应依赖某个特定客户端。
+
+该项目目前是概念原型，优先产出模型与文档，而不是复杂运行时。

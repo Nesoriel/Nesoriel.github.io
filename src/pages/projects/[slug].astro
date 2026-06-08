@@ -1,0 +1,14 @@
+---
+import { siteConfig } from '../../config/site';
+import { getPublicProjects } from '../../lib/content';
+import ProjectPage from '../../views/ProjectPage.astro';
+
+export async function getStaticPaths() {
+  const projects = await getPublicProjects(siteConfig.defaultLocale);
+  return projects.map((project) => ({ params: { slug: project.data.slug }, props: { project } }));
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectPage locale={siteConfig.defaultLocale} project={project} />

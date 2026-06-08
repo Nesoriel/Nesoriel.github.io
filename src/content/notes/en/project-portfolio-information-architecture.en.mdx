@@ -1,0 +1,35 @@
+---
+locale: en
+translationKey: project-portfolio-information-architecture
+title: Information Architecture for an Open-Source Project Portfolio
+slug: project-portfolio-information-architecture
+description: How Nesoriel organizes project status, tags, technology stacks, and links so the portfolio is browsable and maintainable.
+publishedAt: 2026-06-02
+tags: [Information Architecture, Portfolio, Content]
+category: Design
+draft: false
+featured: false
+---
+
+## A Portfolio Is Not a Trophy Wall
+
+An open-source organization project page should not be limited to logos and short slogans. It should help visitors understand whether a project is active, what problem it addresses, which technologies it uses, and where to go next.
+
+## Core Fields
+
+Nesoriel keeps the following project fields:
+
+| Field | Purpose |
+| --- | --- |
+| status | Describes the project phase |
+| tags | Expresses the problem domain |
+| techStack | Describes the implementation |
+| repoUrl / demoUrl / docsUrl | Provides action links |
+
+## Filter Dimensions
+
+The project list supports filtering by status, tag, and technology stack. Filtering runs entirely in the browser using data attributes rendered at build time, without a backend service.
+
+## Featured Ordering
+
+Featured projects appear first, but non-featured public projects are not hidden. This keeps the homepage focused while preserving a complete project view on the portfolio page.

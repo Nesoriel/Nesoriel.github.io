@@ -1,0 +1,30 @@
+---
+locale: en
+translationKey: proxio
+title: Proxio
+slug: proxio
+description: A prototype configuration model for describing proxy rules, connection topology, and diagnostic information.
+longDescription: Proxio focuses on the readability and portability of network proxy configuration, replacing scattered scripts with clearer data structures.
+status: idea
+featured: true
+tags: [Networking, Configuration, Tooling]
+techStack: [TypeScript, YAML, CLI]
+repoUrl: https://github.com/Nesoriel/proxio
+startedAt: 2025-08-03
+updatedAt: 2026-04-12
+visibility: public
+---
+
+## Why Proxio Exists
+
+Proxy configuration often mixes environments, policies, nodes, diagnostics, and exception rules. As devices and network contexts multiply, copying configuration files quickly becomes hard to reason about.
+
+Proxio explores a more stable description layer: rules can be validated, combined, rendered into multiple target formats, and documented alongside the generated output.
+
+## Design Principles
+
+1. Configuration should remain readable by humans.
+2. Generated output must trace back to source rules.
+3. Diagnostics should not depend on one specific client.
+
+The project is currently a concept prototype. Early work prioritizes model design and documentation over a complex runtime.

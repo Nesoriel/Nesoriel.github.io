@@ -1,0 +1,23 @@
+---
+import { supportedLocales } from '../../../config/site';
+import { getPublishedNotes } from '../../../lib/content';
+import NotePage from '../../../views/NotePage.astro';
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    supportedLocales.map(async (locale) => {
+      const notes = await getPublishedNotes(locale);
+      return notes.map((note, index) => ({
+        params: { locale, slug: note.data.slug },
+        props: { locale, note, previous: notes[index + 1], next: notes[index - 1] },
+      }));
+    }),
+  );
+
+  return paths.flat();
+}
+
+const { locale, note, previous, next } = Astro.props as Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+---
+
+<NotePage locale={locale} note={note} previous={previous} next={next} />

@@ -1,0 +1,63 @@
+---
+import type { ProjectEntry } from '../lib/content';
+import { type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import { uniqueSorted } from '../lib/content';
+
+interface Props {
+  projects: ProjectEntry[];
+  locale: Locale;
+}
+
+const { projects, locale } = Astro.props;
+const t = getUi(locale);
+const normalize = (value: string) => value.trim().toLowerCase();
+const statuses = (Object.keys(t.status) as ProjectEntry['data']['status'][]).filter((status) =>
+  projects.some((project) => project.data.status === status),
+);
+const tags = uniqueSorted(projects.flatMap((project) => project.data.tags));
+const techStack = uniqueSorted(projects.flatMap((project) => project.data.techStack));
+
+const buttonClass = 'focus-ring rounded-md border border-site-border px-3 py-2 text-sm transition hover:border-site-border-strong hover:text-site';
+---
+
+<section class="surface-card rounded-lg p-6" aria-labelledby="project-filters-title">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h2 id="project-filters-title" class="text-lg font-semibold tracking-[-0.03em] text-site">{t.projects.filtersTitle}</h2>
+      <p class="mt-2 text-sm text-site-muted">{t.projects.filtersDescription}</p>
+    </div>
+    <p class="text-sm text-site-subtle" aria-live="polite" data-filter-results>{locale === 'zh-cn' ? `${projects.length} ${t.projects.showingLabel}` : `Showing ${projects.length} ${t.projects.showingLabel}`}</p>
+  </div>
+
+  <div class="mt-6 space-y-5">
+    <div>
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.projects.status}</p>
+      <div class="mt-3 flex flex-wrap gap-2" role="toolbar" aria-label={t.projects.statusAria} data-filter-group="status">
+        <button type="button" class={buttonClass} data-filter-value="all" aria-pressed="true">{t.common.all}</button>
+        {statuses.map((status) => <button type="button" class={buttonClass} data-filter-value={normalize(status)} aria-pressed="false">{t.status[status]}</button>)}
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.projects.tags}</p>
+      <div class="mt-3 flex flex-wrap gap-2" role="toolbar" aria-label={t.projects.tagsAria} data-filter-group="tags">
+        <button type="button" class={buttonClass} data-filter-value="all" aria-pressed="true">{t.common.all}</button>
+        {tags.map((tag) => <button type="button" class={buttonClass} data-filter-value={normalize(tag)} aria-pressed="false">{tag}</button>)}
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.projects.techStack}</p>
+      <div class="mt-3 flex flex-wrap gap-2" role="toolbar" aria-label={t.projects.techStackAria} data-filter-group="techStack">
+        <button type="button" class={buttonClass} data-filter-value="all" aria-pressed="true">{t.common.all}</button>
+        {techStack.map((item) => <button type="button" class={buttonClass} data-filter-value={normalize(item)} aria-pressed="false">{item}</button>)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { setupCollectionFilters } from '../lib/client/collection-filters';
+  setupCollectionFilters('[data-project-filter-root]');
+</script>

@@ -1,0 +1,37 @@
+---
+locale: zh-cn
+translationKey: github-pages-edgeone-deployment-record
+title: GitHub Pages 与 EdgeOne Pages 双站点部署记录
+slug: github-pages-edgeone-deployment-record
+description: 记录同一份 Nesoriel 官网代码如何分别构建到国际站和国内站，并保持主要内容一致。
+publishedAt: 2026-05-28
+updatedAt: 2026-06-08
+tags: [Deployment, GitHub Pages, EdgeOne Pages]
+category: Operations
+draft: false
+featured: true
+---
+
+## 目标
+
+Nesoriel 官网部署到两个域名：`nesoriel.com` 与 `nesoriel.cn`。两个域名都代表同一个开源组织，而不是两套内容或两个站点定位。
+
+允许不同的部分只有部署元信息：站点 URL、域名、canonical、sitemap、Open Graph URL、CNAME 和备案记录展示。
+
+## GitHub Pages
+
+国际站通过 GitHub Actions 构建。构建脚本写入 `dist/CNAME`，内容为：
+
+```txt
+nesoriel.com
+```
+
+这样 GitHub Pages 可以识别自定义域名。
+
+## EdgeOne Pages
+
+国内站通过 EdgeOne Pages 构建，构建命令使用 `pnpm build:edgeone`。备案信息由环境变量注入，只在 footer 展示，不改变主要内容结构。
+
+## 维护规则
+
+不要根据 `SITE_TARGET` 隐藏项目、改变 Notes 列表或切换站点定位。只要内容属于 Nesoriel 官网，就应该在两个域名上保持一致。

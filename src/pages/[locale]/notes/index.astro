@@ -1,0 +1,12 @@
+---
+import { supportedLocales, type Locale } from '../../../config/site';
+import NotesPage from '../../../views/NotesPage.astro';
+
+export function getStaticPaths() {
+  return supportedLocales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+---
+
+<NotesPage locale={locale} />

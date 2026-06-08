@@ -1,0 +1,42 @@
+---
+locale: en
+translationKey: why-astro-static-org-site
+title: Why Astro Fits a Static Organization Website
+slug: why-astro-static-org-site
+description: "Why the Nesoriel website uses Astro: static output, content collections, low JavaScript cost, and clear deployment boundaries."
+publishedAt: 2026-05-12
+updatedAt: 2026-06-08
+tags: [Astro, Static Site, Architecture]
+category: Engineering
+draft: false
+featured: true
+---
+
+## Background
+
+The Nesoriel website needs to introduce the organization, present a project portfolio, and publish engineering notes. It does not need login, comments, a database, or an admin panel, so a full application framework would add unnecessary runtime complexity.
+
+Astro's static output model matches the real requirement: generate pages at build time, then deploy ordinary files.
+
+## Value of Content Collections
+
+Astro Content Collections give projects and notes typed frontmatter. For an open-source organization website, that is more maintainable than hardcoding content in page components.
+
+```ts
+const projects = defineCollection({
+  schema: z.object({
+    title: z.string(),
+    status: z.enum(['idea', 'active', 'paused', 'archived']),
+  }),
+});
+```
+
+Type constraints catch mistakes during the build, such as missing slugs, invalid status values, or malformed dates.
+
+## JavaScript Cost
+
+The website interactions are limited to theme switching, filters, and static search. These can be handled with small browser scripts without introducing a large frontend runtime.
+
+## Deployment Boundary
+
+Astro's `dist` output can be deployed to GitHub Pages, EdgeOne Pages, or any ordinary static hosting provider. For Nesoriel, this portability matters more than platform-specific runtime features.

@@ -1,0 +1,17 @@
+---
+import { siteConfig } from '../../config/site';
+import { getPublishedNotes } from '../../lib/content';
+import NotePage from '../../views/NotePage.astro';
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes(siteConfig.defaultLocale);
+  return notes.map((note, index) => ({
+    params: { slug: note.data.slug },
+    props: { note, previous: notes[index + 1], next: notes[index - 1] },
+  }));
+}
+
+const { note, previous, next } = Astro.props;
+---
+
+<NotePage locale={siteConfig.defaultLocale} note={note} previous={previous} next={next} />

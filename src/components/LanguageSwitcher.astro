@@ -1,0 +1,31 @@
+---
+import { localeConfig, localizedPath, supportedLocales, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const t = getUi(locale);
+---
+
+<div class="inline-flex items-center rounded-md border border-site-border bg-site-bg-soft p-1" role="group" aria-label={t.language.switcherLabel}>
+  {supportedLocales.map((targetLocale) => (
+    <a
+      href={localizedPath(targetLocale, path)}
+      hreflang={localeConfig[targetLocale].htmlLang}
+      lang={localeConfig[targetLocale].htmlLang}
+      aria-current={targetLocale === locale ? 'true' : undefined}
+      class:list={[
+        'focus-ring min-w-9 rounded px-2 py-1.5 text-center text-xs font-medium transition',
+        targetLocale === locale
+          ? 'bg-site text-site-bg'
+          : 'text-site-muted hover:bg-site-bg hover:text-site',
+      ]}
+    >
+      {localeConfig[targetLocale].shortLabel}
+    </a>
+  ))}
+</div>

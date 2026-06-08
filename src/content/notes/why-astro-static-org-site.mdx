@@ -1,0 +1,42 @@
+---
+locale: zh-cn
+translationKey: why-astro-static-org-site
+title: 为什么选择 Astro 构建静态组织官网
+slug: why-astro-static-org-site
+description: 记录 Nesoriel 官网选择 Astro 的原因：静态输出、内容集合、低 JavaScript 成本和清晰部署边界。
+publishedAt: 2026-05-12
+updatedAt: 2026-06-08
+tags: [Astro, Static Site, Architecture]
+category: Engineering
+draft: false
+featured: true
+---
+
+## 背景
+
+Nesoriel 官网需要同时承担组织介绍、项目作品集和技术记录三类内容。它不需要登录、评论、数据库或后台管理，因此完整应用框架会带来不必要的运行时复杂度。
+
+Astro 的静态输出模型更接近这个项目的真实需求：构建时生成页面，部署时只需要普通静态文件。
+
+## 内容集合的价值
+
+Astro Content Collections 让项目和 Notes 都能拥有类型化 frontmatter。对于开源组织网站来说，这比把内容写死在页面组件里更可维护。
+
+```ts
+const projects = defineCollection({
+  schema: z.object({
+    title: z.string(),
+    status: z.enum(['idea', 'active', 'paused', 'archived']),
+  }),
+});
+```
+
+类型约束可以在构建阶段发现错误，例如漏写 slug、状态枚举拼错或日期格式不合法。
+
+## JavaScript 成本
+
+官网的交互主要是主题切换、筛选和静态搜索。这些能力可以用少量浏览器脚本完成，不需要引入大型前端运行时。
+
+## 部署边界
+
+Astro 输出的 `dist` 可以被 GitHub Pages、EdgeOne Pages 或任意静态托管服务接管。对 Nesoriel 来说，这种可移植性比某个平台特有能力更重要。

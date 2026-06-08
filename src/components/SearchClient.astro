@@ -1,0 +1,81 @@
+---
+import { formatDate, type NoteEntry, type ProjectEntry } from '../lib/content';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+
+interface Props {
+  projects?: ProjectEntry[];
+  notes?: NoteEntry[];
+  locale: Locale;
+}
+
+const {
+  projects = [],
+  notes = [],
+  locale,
+} = Astro.props;
+const t = getUi(locale);
+
+const searchItems = [
+  ...projects.map((project) => ({
+    title: project.data.title,
+    href: localizedPath(locale, `/projects/${project.data.slug}/`),
+    description: project.data.description,
+    type: t.search.projectType,
+    meta: [t.status[project.data.status], project.data.updatedAt ? `${t.common.updated} ${formatDate(project.data.updatedAt, locale)}` : undefined].filter(Boolean).join(' · '),
+    terms: [...project.data.tags, ...project.data.techStack, project.data.status],
+  })),
+  ...notes.map((note) => ({
+    title: note.data.title,
+    href: localizedPath(locale, `/notes/${note.data.slug}/`),
+    description: note.data.description,
+    type: t.search.noteType,
+    meta: [note.data.category, formatDate(note.data.publishedAt, locale)].join(' · '),
+    terms: [...note.data.tags, note.data.category],
+  })),
+];
+---
+
+<section
+  class="space-y-6"
+  data-search-root
+  data-search-items={JSON.stringify(searchItems)}
+  data-search-locale={locale}
+  data-search-searchable={t.search.searchable}
+  data-search-result={t.search.result}
+  data-search-results={t.search.results}
+  data-search-for-query={t.search.forQuery}
+>
+  <div class="surface-card rounded-lg p-6">
+    <h2 class="text-2xl font-semibold tracking-[-0.04em] text-site">{t.search.panelTitle}</h2>
+    <p class="mt-3 text-sm leading-7 text-site-muted">{t.search.panelDescription}</p>
+
+    <label class="mt-6 block" for="site-search-input">
+      <span class="mb-3 block text-sm font-medium text-site">{t.search.inputLabel}</span>
+      <input
+        id="site-search-input"
+        class="focus-ring w-full rounded-md border border-site-border bg-site-bg px-4 py-3 text-base text-site placeholder:text-site-subtle"
+        type="search"
+        name="q"
+        placeholder={t.search.placeholder}
+        autocomplete="off"
+        data-search-input
+      />
+    </label>
+
+    <p class="mt-4 text-sm text-site-subtle" aria-live="polite" data-search-summary>
+      {searchItems.length} {t.search.searchable}
+    </p>
+  </div>
+
+  <div class="space-y-4" data-search-results></div>
+
+  <div class="surface-card rounded-lg p-6 text-sm text-site-muted" data-search-empty hidden>
+    {t.search.empty}
+  </div>
+</section>
+
+<script>
+  import { setupSearchClient } from '../lib/client/search-client';
+  setupSearchClient();
+</script>

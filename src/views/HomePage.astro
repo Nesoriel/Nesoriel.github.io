@@ -1,0 +1,123 @@
+---
+import NoteListItem from '../components/NoteListItem.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublicProjects, getPublishedNotes } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getUi(locale);
+const projects = await getPublicProjects(locale);
+const notes = await getPublishedNotes(locale);
+const featuredProjects = projects.filter((project) => project.data.featured).slice(0, 3);
+const recentNotes = notes.slice(0, 3);
+---
+
+<BaseLayout locale={locale} title={t.home.title} description={t.home.description} canonicalPath="/">
+  <section class="mx-auto grid w-full max-w-7xl gap-12 px-5 pb-16 pt-20 sm:px-6 md:pt-28 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
+    <div class="animate-reveal">
+      <p class="mb-5 text-sm font-medium uppercase tracking-[0.22em] text-site-accent">{t.home.eyebrow}</p>
+      <h1 class="max-w-5xl text-5xl font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl">{t.home.heading}</h1>
+      <p class="mt-7 max-w-2xl text-lg leading-8 text-site-muted">{t.home.lead}</p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a class="focus-ring rounded-md bg-site px-5 py-3 text-sm font-medium text-site-bg transition hover:opacity-90" href={localizedPath(locale, '/projects/')}>{t.home.primaryCta}</a>
+        <a class="focus-ring rounded-md border border-site-border px-5 py-3 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" href={localizedPath(locale, '/notes/')}>{t.home.secondaryCta}</a>
+      </div>
+      <dl class="mt-12 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-6 border-t border-site-border pt-8 sm:grid-cols-4">
+        <div>
+          <dt class="text-xs uppercase tracking-[0.18em] text-site-subtle">{t.home.metrics.projects}</dt>
+          <dd class="mt-2 text-2xl font-semibold">{projects.length}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-[0.18em] text-site-subtle">{t.home.metrics.notes}</dt>
+          <dd class="mt-2 text-2xl font-semibold">{notes.length}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-[0.18em] text-site-subtle">{t.home.metrics.output}</dt>
+          <dd class="mt-2 text-2xl font-semibold">Static</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-[0.18em] text-site-subtle">{t.home.metrics.domains}</dt>
+          <dd class="mt-2 text-2xl font-semibold">2</dd>
+        </div>
+      </dl>
+    </div>
+
+    <figure class="animate-reveal relative [animation-delay:120ms]">
+      <div class="absolute inset-x-8 -top-4 h-px bg-gradient-to-r from-transparent via-site-accent/70 to-transparent"></div>
+      <img
+        class="aspect-[16/10] w-full rounded-lg border border-site-border object-cover shadow-[0_24px_80px_hsl(220_40%_2%/0.42)]"
+        src="/assets/nesoriel-lab-map.webp"
+        alt={t.home.visualAlt}
+        width="1400"
+        height="896"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+  </section>
+
+  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+    <div class="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+      <div>
+        <p class="text-sm uppercase tracking-[0.22em] text-site-accent">{t.home.focusEyebrow}</p>
+        <h2 class="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{t.home.focusTitle}</h2>
+        <p class="mt-5 max-w-2xl text-base leading-8 text-site-muted">{t.home.focusDescription}</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        {t.home.focusItems.map(([title, text]) => (
+          <article class="surface-card rounded-lg p-5">
+            <h3 class="text-lg font-semibold tracking-[-0.02em]">{title}</h3>
+            <p class="mt-4 text-sm leading-7 text-site-muted">{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+    <div class="mb-8 flex items-end justify-between gap-6">
+      <div>
+        <p class="text-sm uppercase tracking-[0.22em] text-site-accent">{t.home.projectsEyebrow}</p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-[-0.035em]">{t.home.projectsTitle}</h2>
+      </div>
+      <a class="text-sm text-site-muted hover:text-site" href={localizedPath(locale, '/projects/')}>{t.home.projectsLink}</a>
+    </div>
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {featuredProjects.map((project) => <ProjectCard project={project} locale={locale} />)}
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-end justify-between gap-6">
+      <div>
+        <p class="text-sm uppercase tracking-[0.22em] text-site-accent">{t.home.notesEyebrow}</p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-[-0.035em]">{t.home.notesTitle}</h2>
+      </div>
+      <a class="text-sm text-site-muted hover:text-site" href={localizedPath(locale, '/notes/')}>{t.home.notesLink}</a>
+    </div>
+    <div class="grid gap-5">
+      {recentNotes.map((note) => <NoteListItem note={note} locale={locale} />)}
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-7xl px-5 pb-24 pt-16 sm:px-6 lg:px-8">
+    <div class="border-y border-site-border py-12">
+      <p class="text-sm uppercase tracking-[0.22em] text-site-accent">{t.home.operatingEyebrow}</p>
+      <h2 class="mt-4 max-w-4xl text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{t.home.operatingTitle}</h2>
+      <div class="mt-9 grid gap-4 md:grid-cols-3">
+        {t.home.operatingItems.map(([title, text]) => (
+          <article class="rounded-lg border border-site-border bg-site-bg-soft/55 p-5">
+            <h3 class="text-lg font-semibold tracking-[-0.02em]">{title}</h3>
+            <p class="mt-4 text-sm leading-7 text-site-muted">{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

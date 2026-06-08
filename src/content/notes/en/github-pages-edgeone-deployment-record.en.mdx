@@ -1,0 +1,37 @@
+---
+locale: en
+translationKey: github-pages-edgeone-deployment-record
+title: Dual-Site Deployment with GitHub Pages and EdgeOne Pages
+slug: github-pages-edgeone-deployment-record
+description: A record of how one Nesoriel website codebase builds to the global and mainland China domains while keeping main content aligned.
+publishedAt: 2026-05-28
+updatedAt: 2026-06-08
+tags: [Deployment, GitHub Pages, EdgeOne Pages]
+category: Operations
+draft: false
+featured: true
+---
+
+## Goal
+
+The Nesoriel website is deployed to two domains: `nesoriel.com` and `nesoriel.cn`. Both domains represent the same open-source organization rather than two content modes or two different site positions.
+
+Allowed differences are deployment metadata: site URL, domain, canonical URLs, sitemap URLs, Open Graph URLs, CNAME output, and compliance records.
+
+## GitHub Pages
+
+The global site is built through GitHub Actions. The build script writes `dist/CNAME` with this content:
+
+```txt
+nesoriel.com
+```
+
+This lets GitHub Pages bind the custom domain to the generated static output.
+
+## EdgeOne Pages
+
+The mainland China site is built through EdgeOne Pages with `pnpm build:edgeone`. Compliance records are injected by environment variables and displayed only in the footer. They do not change the main content structure.
+
+## Maintenance Rule
+
+Do not use `SITE_TARGET` to hide projects, change the notes list, or switch the site identity. If content belongs to the Nesoriel official website, it should remain available on both domains.

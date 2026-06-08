@@ -1,0 +1,28 @@
+---
+locale: en
+translationKey: nesoriel-site
+title: Nesoriel Site
+slug: nesoriel-site
+description: The official Nesoriel website, built with Astro, MDX, and Content Collections, then deployed from one codebase to two domains.
+longDescription: Nesoriel Site is the reference implementation for the organization's website and deployment rules, emphasizing static output, shared content across domains, maintainable information architecture, and low operational cost.
+status: active
+featured: true
+tags: [Website, Documentation, Open Source]
+techStack: [Astro, TypeScript, Tailwind CSS, MDX]
+repoUrl: https://github.com/Nesoriel/Nesoriel.github.io
+demoUrl: /
+docsUrl: /notes/
+startedAt: 2026-01-05
+updatedAt: 2026-06-08
+visibility: public
+---
+
+## Positioning
+
+Nesoriel Site is the unified entry point for the organization website, project portfolio, and engineering notes. It is designed as a fully static website without a database, backend service, or third-party search system.
+
+## Dual-Domain Constraint
+
+The same codebase builds to `nesoriel.com` and `nesoriel.cn`. Both domains share the homepage, projects, notes, and about page. Differences are limited to environment-driven metadata: site URL, domain, canonical URL, sitemap URL, Open Graph URL, CNAME output, and compliance records.
+
+This constraint keeps maintenance simple and avoids the risk of runtime content switching based on region, user agent, query parameters, or hidden controls.

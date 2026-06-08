@@ -1,0 +1,33 @@
+---
+import NoteFilters from '../components/NoteFilters.astro';
+import NoteListItem from '../components/NoteListItem.astro';
+import PageHeader from '../components/PageHeader.astro';
+import type { Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedNotes } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getUi(locale);
+const notes = await getPublishedNotes(locale);
+---
+
+<BaseLayout locale={locale} title={t.notes.title} description={t.notes.description} canonicalPath="/notes/">
+  <PageHeader eyebrow={t.notes.eyebrow} title={t.notes.heading} description={t.notes.intro} />
+  <section
+    class="mx-auto grid w-full max-w-7xl gap-8 px-5 pb-20 sm:px-6 lg:grid-cols-[21rem_1fr] lg:px-8"
+    data-note-filter-root
+    data-filter-label={t.notes.showingLabel}
+    data-filter-locale={locale}
+  >
+    <div class="lg:sticky lg:top-24 lg:self-start"><NoteFilters notes={notes} locale={locale} /></div>
+    <div class="space-y-5">
+      {notes.map((note) => <NoteListItem note={note} locale={locale} />)}
+      <div class="surface-card hidden rounded-lg p-6 text-sm text-site-muted" data-filter-empty>{t.notes.empty}</div>
+    </div>
+  </section>
+</BaseLayout>

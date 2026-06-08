@@ -1,0 +1,72 @@
+---
+import StatusPill from './StatusPill.astro';
+import TagPill from './TagPill.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import { formatDate, type ProjectEntry } from '../lib/content';
+
+interface Props {
+  project: ProjectEntry;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const t = getUi(locale);
+const normalize = (value: string) => value.trim().toLowerCase();
+const tagTokens = project.data.tags.map(normalize).join('|');
+const techTokens = project.data.techStack.map(normalize).join('|');
+const projectHref = localizedPath(locale, `/projects/${project.data.slug}/`);
+const linkHref = (href: string) => href.startsWith('/') ? localizedPath(locale, href) : href;
+---
+
+<article
+  class="surface-card rounded-lg p-6 transition hover:border-site-border-strong"
+  data-filter-item
+  data-status={normalize(project.data.status)}
+  data-tags={tagTokens}
+  data-tech-stack={techTokens}
+>
+  <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center gap-3">
+        <StatusPill status={project.data.status} locale={locale} />
+        {project.data.featured && (
+          <span class="inline-flex rounded-full border border-site-accent/30 bg-site-accent/10 px-2.5 py-1 text-xs font-medium text-site-accent">
+            {t.common.featured}
+          </span>
+        )}
+      </div>
+      <div>
+        <h3 class="text-2xl font-semibold tracking-[-0.035em] text-site">
+          <a href={projectHref} class="focus-ring rounded-md">{project.data.title}</a>
+        </h3>
+        <p class="mt-3 max-w-2xl text-sm leading-7 text-site-muted">{project.data.description}</p>
+      </div>
+    </div>
+    {project.data.updatedAt && <p class="text-xs text-site-subtle">{t.common.updated} {formatDate(project.data.updatedAt, locale)}</p>}
+  </div>
+
+  {project.data.techStack.length > 0 && (
+    <div class="mt-5">
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.projects.techStack}</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        {project.data.techStack.map((item) => <TagPill label={item} />)}
+      </div>
+    </div>
+  )}
+
+  {project.data.tags.length > 0 && (
+    <div class="mt-5">
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{t.projects.tags}</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        {project.data.tags.map((item) => <TagPill label={item} />)}
+      </div>
+    </div>
+  )}
+
+  <div class="mt-6 flex flex-wrap gap-3 text-sm text-site-muted">
+    {project.data.repoUrl && <a href={linkHref(project.data.repoUrl)} class="focus-ring rounded-md border border-site-border px-3 py-2 transition hover:border-site-border-strong hover:text-site">{t.common.repository}</a>}
+    {project.data.demoUrl && <a href={linkHref(project.data.demoUrl)} class="focus-ring rounded-md border border-site-border px-3 py-2 transition hover:border-site-border-strong hover:text-site">{t.common.demo}</a>}
+    {project.data.docsUrl && <a href={linkHref(project.data.docsUrl)} class="focus-ring rounded-md border border-site-border px-3 py-2 transition hover:border-site-border-strong hover:text-site">{t.common.docs}</a>}
+  </div>
+</article>

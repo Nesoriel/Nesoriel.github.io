@@ -1,0 +1,44 @@
+---
+import { render } from 'astro:content';
+import StatusPill from '../components/StatusPill.astro';
+import TagPill from '../components/TagPill.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, type ProjectEntry } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  project: ProjectEntry;
+}
+
+const { locale, project } = Astro.props;
+const t = getUi(locale);
+const { Content } = await render(project);
+const linkHref = (href: string) => href.startsWith('/') ? localizedPath(locale, href) : href;
+---
+
+<BaseLayout locale={locale} title={project.data.title} description={project.data.description} type="article" canonicalPath={`/projects/${project.data.slug}/`}>
+  <article class="mx-auto grid w-full max-w-7xl gap-10 px-5 py-20 sm:px-6 lg:grid-cols-[1fr_20rem] lg:px-8">
+    <div>
+      <div class="mb-5 flex flex-wrap gap-3">
+        <StatusPill status={project.data.status} locale={locale} />
+        {project.data.featured && <span class="rounded-full border border-site-accent/30 bg-site-accent/10 px-2.5 py-1 text-xs text-site-accent">{t.common.featured}</span>}
+      </div>
+      <h1 class="text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">{project.data.title}</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-site-muted">{project.data.longDescription ?? project.data.description}</p>
+      <div class="prose-content mt-12"><Content /></div>
+    </div>
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      <div class="surface-card rounded-lg p-6 text-sm text-site-muted">
+        {project.data.updatedAt && <p>{t.common.updated}: {formatDate(project.data.updatedAt, locale)}</p>}
+        <div class="mt-5 flex flex-wrap gap-2">{project.data.techStack.map((item) => <TagPill label={item} />)}</div>
+        <div class="mt-6 flex flex-col gap-3">
+          {project.data.repoUrl && <a class="focus-ring rounded-md border border-site-border px-4 py-2 hover:text-site" href={linkHref(project.data.repoUrl)}>{t.common.repository}</a>}
+          {project.data.demoUrl && <a class="focus-ring rounded-md border border-site-border px-4 py-2 hover:text-site" href={linkHref(project.data.demoUrl)}>{t.common.demo}</a>}
+          {project.data.docsUrl && <a class="focus-ring rounded-md border border-site-border px-4 py-2 hover:text-site" href={linkHref(project.data.docsUrl)}>{t.common.docs}</a>}
+        </div>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>
