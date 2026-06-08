@@ -15,7 +15,7 @@ main:
         EDGEONE_PAGES_PROJECT_NAME: nesoriel-cn
       stages:
         - name: Install dependencies
-          script: corepack enable --activate && pnpm install --frozen-lockfile
+          script: corepack enable && pnpm install --frozen-lockfile
         - name: Build China site
           script: pnpm build:edgeone
         - name: Deploy to EdgeOne Pages
