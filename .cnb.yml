@@ -1,0 +1,27 @@
+main:
+  push:
+    - name: Deploy EdgeOne Pages
+      runner:
+        cpus: 2
+      docker:
+        image: node:22.12.0
+      imports:
+        - https://cnb.cool/Nesoriel/secret-prod/-/blob/main/cloud-providers/tencent-cloud.yml
+      env:
+        SITE_URL: https://nesoriel.cn
+        SITE_NAME: Nesoriel
+        SITE_DOMAIN: nesoriel.cn
+        SITE_TARGET: cn
+        EDGEONE_PAGES_PROJECT_NAME: nesoriel-cn
+      stages:
+        - name: Install dependencies
+          script: corepack enable && pnpm install --frozen-lockfile
+        - name: Build China site
+          script: pnpm build:edgeone
+        - name: Deploy to EdgeOne Pages
+          script: |
+            if [ -z "$EDGEONE_PAGES_API_TOKEN" ]; then
+              echo "EDGEONE_PAGES_API_TOKEN is required." >&2
+              exit 1
+            fi
+            npx edgeone pages deploy ./dist -n "$EDGEONE_PAGES_PROJECT_NAME" -e production -t "$EDGEONE_PAGES_API_TOKEN"
