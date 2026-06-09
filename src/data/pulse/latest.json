@@ -1,56 +1,126 @@
 {
   "date": "2026-06-09",
-  "generatedAt": "2026-06-09T00:00:00.000Z",
+  "generatedAt": "2026-06-09T05:16:45.211Z",
   "windowHours": 24,
-  "source": "seed",
-  "summary": "Nesoriel kept its public site and deployment surface moving with focused static-site work, documentation updates, and deployment hardening.",
+  "source": "github",
+  "summary": "Nesoriel Pulse captured 13 public activities, 13 commits, 0 issues, 0 pull requests, 1 active repositories across the tracked repositories in the last 24 hours.",
   "repositories": [
     {
       "name": "Nesoriel Site",
       "owner": "Nesoriel",
       "repo": "Nesoriel.github.io",
       "url": "https://github.com/Nesoriel/Nesoriel.github.io",
-      "commits": 3,
+      "commits": 13,
       "issues": 0,
       "pullRequests": 0,
-      "total": 3
+      "total": 13
     }
   ],
   "commits": [
     {
       "repo": "Nesoriel/Nesoriel.github.io",
-      "message": "Add dual-domain deployment documentation and static site foundation",
-      "url": "https://github.com/Nesoriel/Nesoriel.github.io",
-      "author": "Nesoriel",
-      "timestamp": "2026-06-09T00:00:00.000Z"
+      "message": "chore: add future logo assets",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/b3563471f2a2164af75d5070514898d406b27c69",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-09T00:48:10Z"
     },
     {
       "repo": "Nesoriel/Nesoriel.github.io",
-      "message": "Refine CNB and EdgeOne Pages deployment workflow",
-      "url": "https://github.com/Nesoriel/Nesoriel.github.io",
-      "author": "Nesoriel",
-      "timestamp": "2026-06-09T00:00:00.000Z"
+      "message": "docs: document Nesoriel Pulse workflow",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/ca2e6ca4d20c69fddf4b3020858c759ea63fa22d",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-09T00:48:01Z"
     },
     {
       "repo": "Nesoriel/Nesoriel.github.io",
-      "message": "Stabilize static build checks for both official domains",
-      "url": "https://github.com/Nesoriel/Nesoriel.github.io",
-      "author": "Nesoriel",
-      "timestamp": "2026-06-09T00:00:00.000Z"
+      "message": "ci: collect daily Pulse data",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/3e03c756c126a74caec49049f1c2fbce23a1f697",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-09T00:47:51Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "feat: add Nesoriel Pulse dashboard",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/1fa4ddcf7fdc2d227b330b502f0401d823a83583",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-09T00:47:42Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "fix: install pnpm explicitly in CNB workflow",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/02725fa1e1d5220eb91d652f14a31298397bbe6a",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T18:56:47Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "fix: 修复 corepack 启用命令以移除多余的激活参数",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/29f722a3511a3009184cb66fc207248c7ecdf17a",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T17:18:03Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "fix: 修复 corepack 启用命令以确保正确激活",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/10c2bdaeb361f914b5679671f9e8919c31419d1e",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T17:13:01Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "feat: 增加 GitHub Pages 部署与 CNB 同步功能",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/ef51fa546db5fab3f79cb0d3bcd25950d1be8875",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T15:33:23Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "docs: document site maintenance and deployment",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/ae5e40d8f80aca7e3593638ebef7a1647dd5943a",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T14:48:52Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "ci: add dual site deployment scripts",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/a4d28bb7bf9799490a32142c2c41a580fe8446a9",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T14:48:46Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "feat: implement Nesoriel website experience",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/2346fc751e4e290fec44a9fd42089641b66570b8",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T14:48:36Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "chore: scaffold Astro site foundation",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/02ca174fcb8436f9047a0376ebc3e6750e6a5ce1",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T14:48:30Z"
+    },
+    {
+      "repo": "Nesoriel/Nesoriel.github.io",
+      "message": "Initial commit",
+      "url": "https://github.com/Nesoriel/Nesoriel.github.io/commit/7cf4844c50b662d6faf6b61ecedb91304839d936",
+      "author": "YangYuS8",
+      "timestamp": "2026-06-08T11:48:39Z"
     }
   ],
   "issues": [],
   "pullRequests": [],
   "metrics": {
-    "commits": 3,
+    "commits": 13,
     "issues": 0,
     "pullRequests": 0,
     "activeRepositories": 1,
-    "totalActivities": 3
+    "totalActivities": 13
   },
   "highlights": [
-    "Static deployment paths for GitHub Pages and EdgeOne Pages stayed aligned.",
-    "Documentation clarified how the two official domains share one content model.",
-    "The website continued to operate as the public surface for Nesoriel projects and records."
+    "13 commits were captured from public repositories.",
+    "0 issue or pull request updates were recorded.",
+    "Nesoriel Site was the most active tracked repository with 13 activities."
   ]
 }
