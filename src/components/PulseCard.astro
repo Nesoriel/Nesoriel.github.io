@@ -1,0 +1,30 @@
+---
+interface Props {
+  title?: string;
+  eyebrow?: string;
+  href?: string;
+  compact?: boolean;
+}
+
+const { title, eyebrow, href, compact = false } = Astro.props;
+const Tag = href ? 'a' : 'section';
+---
+
+<Tag
+  {...(href ? { href } : {})}
+  class:list={[
+    'surface-card block rounded-2xl transition',
+    compact ? 'p-4' : 'p-5 sm:p-6',
+    href && 'focus-ring hover:-translate-y-0.5 hover:border-site-border-strong',
+  ]}
+>
+  {(eyebrow || title) && (
+    <header>
+      {eyebrow && <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{eyebrow}</p>}
+      {title && <h2 class="mt-2 text-lg font-semibold tracking-[-0.03em] text-site">{title}</h2>}
+    </header>
+  )}
+  <div class:list={[title || eyebrow ? 'mt-4' : undefined]}>
+    <slot />
+  </div>
+</Tag>

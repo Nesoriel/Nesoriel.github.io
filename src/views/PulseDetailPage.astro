@@ -1,0 +1,150 @@
+---
+import ActivityStrip from '../components/ActivityStrip.astro';
+import PulseCard from '../components/PulseCard.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatPulseDate, getPulseActivityStrip, localizePulseSummary, type PulseActivity, type PulseEntry } from '../lib/pulse';
+
+interface Props {
+  locale: Locale;
+  entry: PulseEntry;
+  previous?: PulseEntry;
+  next?: PulseEntry;
+}
+
+const { locale, entry, previous, next } = Astro.props;
+const t = getUi(locale);
+const stripItems = getPulseActivityStrip(7);
+
+const formatGeneratedAt = (value: string) =>
+  new Intl.DateTimeFormat(locale === 'zh-cn' ? 'zh-CN' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+
+const formatActivityTime = (value: string) =>
+  new Intl.DateTimeFormat(locale === 'zh-cn' ? 'zh-CN' : 'en-US', {
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+
+const activitySections: Array<{ title: string; items: PulseActivity[] }> = [
+  { title: t.pulse.commitsTitle, items: entry.commits },
+  { title: t.pulse.issuesTitle, items: entry.issues },
+  { title: t.pulse.pullRequestsTitle, items: entry.pullRequests },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${t.pulse.detailTitle} ${formatPulseDate(entry.date, locale)}`}
+  description={`${t.pulse.detailDescription} ${formatPulseDate(entry.date, locale)}`}
+  canonicalPath={`/pulse/${entry.date}/`}
+>
+  <section class="mx-auto w-full max-w-7xl px-5 pb-20 pt-20 sm:px-6 lg:px-8">
+    <p class="text-sm font-medium uppercase tracking-[0.22em] text-site-accent">{t.pulse.eyebrow}</p>
+    <h1 class="mt-4 max-w-4xl text-4xl font-semibold tracking-[-0.045em] sm:text-5xl lg:text-6xl">{formatPulseDate(entry.date, locale)}</h1>
+    <p class="mt-5 max-w-3xl text-base leading-8 text-site-muted">{localizePulseSummary(entry, locale)}</p>
+  </section>
+
+  <section class="mx-auto grid w-full max-w-7xl gap-6 px-5 pb-20 sm:px-6 lg:px-8">
+    <ActivityStrip locale={locale} items={stripItems} title={t.pulse.stripTitle} description={t.pulse.stripDescription} dayLabel={t.pulse.stripDayLabel} />
+
+    <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+      <PulseCard title={t.pulse.summaryTitle}>
+        <p class="text-sm leading-7 text-site-muted">{entry.summary || t.pulse.summaryFallback}</p>
+        {entry.highlights.length > 0 && (
+          <ul class="mt-5 space-y-3 text-sm leading-7 text-site-muted">
+            {entry.highlights.map((highlight) => <li class="rounded-xl border border-site-border bg-site-bg-muted/30 px-4 py-3">{highlight}</li>)}
+          </ul>
+        )}
+      </PulseCard>
+
+      <PulseCard title={t.pulse.highlights}>
+        <dl class="grid grid-cols-2 gap-3 text-sm">
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.metrics.commits}</dt><dd class="mt-2 text-2xl font-semibold text-site">{entry.metrics.commits}</dd></div>
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.metrics.issues}</dt><dd class="mt-2 text-2xl font-semibold text-site">{entry.metrics.issues}</dd></div>
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.metrics.pullRequests}</dt><dd class="mt-2 text-2xl font-semibold text-site">{entry.metrics.pullRequests}</dd></div>
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.metrics.activeRepositories}</dt><dd class="mt-2 text-2xl font-semibold text-site">{entry.metrics.activeRepositories}</dd></div>
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.generatedAt}</dt><dd class="mt-2 text-sm leading-6 text-site">{formatGeneratedAt(entry.generatedAt)}</dd></div>
+          <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4"><dt class="text-site-subtle">{t.pulse.source}</dt><dd class="mt-2 text-sm leading-6 text-site">{entry.source}</dd></div>
+        </dl>
+      </PulseCard>
+    </div>
+
+    <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <PulseCard title={t.pulse.repositoriesTitle} eyebrow={t.pulse.repositoriesDescription}>
+        {entry.repositories.length > 0 ? (
+          <div class="space-y-4">
+            {entry.repositories.map((repository) => (
+              <a href={repository.url} class="focus-ring block rounded-xl border border-site-border bg-site-bg-muted/30 p-4 transition hover:border-site-border-strong hover:text-site">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="text-base font-semibold text-site">{repository.name}</h3>
+                    <p class="mt-1 text-sm text-site-subtle">{repository.owner}/{repository.repo}</p>
+                  </div>
+                  <div class="text-right text-xs text-site-subtle">
+                    <div>{repository.total} {t.pulse.repositoryStatTotal}</div>
+                  </div>
+                </div>
+                <dl class="mt-4 grid grid-cols-4 gap-3 text-xs text-site-subtle">
+                  <div><dt>{t.pulse.repositoryStatCommits}</dt><dd class="mt-1 text-base font-semibold text-site">{repository.commits}</dd></div>
+                  <div><dt>{t.pulse.repositoryStatIssues}</dt><dd class="mt-1 text-base font-semibold text-site">{repository.issues}</dd></div>
+                  <div><dt>{t.pulse.repositoryStatPullRequests}</dt><dd class="mt-1 text-base font-semibold text-site">{repository.pullRequests}</dd></div>
+                  <div><dt>{t.pulse.repositoryStatTotal}</dt><dd class="mt-1 text-base font-semibold text-site">{repository.total}</dd></div>
+                </dl>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="text-sm text-site-muted">{t.pulse.emptyRepositories}</p>
+        )}
+      </PulseCard>
+
+      <div class="space-y-6">
+        {activitySections.map((section) => (
+          <PulseCard title={section.title}>
+            {section.items.length > 0 ? (
+              <div class="space-y-3">
+                {section.items.map((item) => (
+                  <a href={item.url} class="focus-ring block rounded-xl border border-site-border bg-site-bg-muted/30 p-4 transition hover:border-site-border-strong hover:text-site">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                      <p class="text-sm font-medium text-site">{item.title ?? item.message ?? item.repo}</p>
+                      <span class="text-xs text-site-subtle">{formatActivityTime(item.timestamp)}</span>
+                    </div>
+                    <p class="mt-2 text-sm text-site-muted">{item.repo}</p>
+                    {(item.author || item.state) && (
+                      <p class="mt-2 text-xs uppercase tracking-[0.14em] text-site-subtle">{[item.author, item.state].filter(Boolean).join(' · ')}</p>
+                    )}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p class="text-sm text-site-muted">{t.pulse.emptyActivity}</p>
+            )}
+          </PulseCard>
+        ))}
+      </div>
+    </div>
+
+    <nav class="grid gap-4 border-t border-site-border pt-8 sm:grid-cols-2" aria-label={t.pulse.previousNextLabel}>
+      {previous ? (
+        <a class="surface-card focus-ring rounded-2xl p-5 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" href={localizedPath(locale, `/pulse/${previous.date}/`)}>
+          <span class="text-site-subtle">{t.common.previous}</span><br />{formatPulseDate(previous.date, locale)}
+        </a>
+      ) : (
+        <span></span>
+      )}
+      {next && (
+        <a class="surface-card focus-ring rounded-2xl p-5 text-right text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" href={localizedPath(locale, `/pulse/${next.date}/`)}>
+          <span class="text-site-subtle">{t.common.next}</span><br />{formatPulseDate(next.date, locale)}
+        </a>
+      )}
+    </nav>
+  </section>
+</BaseLayout>

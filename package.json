@@ -8,6 +8,7 @@
     "build": "astro build",
     "build:github": "cross-env SITE_URL=https://nesoriel.com SITE_NAME=Nesoriel SITE_DOMAIN=nesoriel.com SITE_TARGET=global astro build && node scripts/write-cname.mjs nesoriel.com",
     "build:edgeone": "cross-env SITE_URL=https://nesoriel.cn SITE_NAME=Nesoriel SITE_DOMAIN=nesoriel.cn SITE_TARGET=cn astro build",
+    "collect:pulse": "node scripts/collect-pulse.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",

@@ -2,16 +2,19 @@
 import { formatDate, type NoteEntry, type ProjectEntry } from '../lib/content';
 import { localizedPath, type Locale } from '../config/site';
 import { getUi } from '../i18n/ui';
+import { formatPulseDate, localizePulseSummary, type PulseEntry } from '../lib/pulse';
 
 interface Props {
   projects?: ProjectEntry[];
   notes?: NoteEntry[];
+  pulses?: PulseEntry[];
   locale: Locale;
 }
 
 const {
   projects = [],
   notes = [],
+  pulses = [],
   locale,
 } = Astro.props;
 const t = getUi(locale);
@@ -32,6 +35,14 @@ const searchItems = [
     type: t.search.noteType,
     meta: [note.data.category, formatDate(note.data.publishedAt, locale)].join(' · '),
     terms: [...note.data.tags, note.data.category],
+  })),
+  ...pulses.map((pulse) => ({
+    title: `${t.pulse.detailTitle} ${formatPulseDate(pulse.date, locale)}`,
+    href: localizedPath(locale, `/pulse/${pulse.date}/`),
+    description: localizePulseSummary(pulse, locale),
+    type: t.search.pulseType,
+    meta: [pulse.date, `${pulse.metrics.totalActivities} ${t.pulse.metrics.totalActivities}`].join(' · '),
+    terms: ['pulse', pulse.date, ...pulse.highlights, ...pulse.repositories.map((repo) => repo.name)],
   })),
 ];
 ---

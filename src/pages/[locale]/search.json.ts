@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { localizedPath, supportedLocales, type Locale } from '../../config/site';
 import { getPublicProjects, getPublishedNotes } from '../../lib/content';
+import { getPulseEntries, localizePulseSummary } from '../../lib/pulse';
+import { getUi } from '../../i18n/ui';
 
 export function getStaticPaths() {
   return supportedLocales.map((locale) => ({ params: { locale }, props: { locale } }));
@@ -8,8 +10,10 @@ export function getStaticPaths() {
 
 export const GET: APIRoute = async ({ props }) => {
   const locale = props.locale as Locale;
+  const t = getUi(locale);
   const projects = await getPublicProjects(locale);
   const notes = await getPublishedNotes(locale);
+  const pulseEntries = getPulseEntries();
   const items = [
     ...projects.map((project) => ({
       type: 'project',
@@ -27,6 +31,16 @@ export const GET: APIRoute = async ({ props }) => {
       href: localizedPath(locale, `/notes/${note.data.slug}/`),
       tags: note.data.tags,
       category: note.data.category,
+    })),
+    ...pulseEntries.map((entry) => ({
+      type: 'pulse',
+      title: `${t.pulse.detailTitle} ${entry.date}`,
+      description: localizePulseSummary(entry, locale),
+      href: localizedPath(locale, `/pulse/${entry.date}/`),
+      tags: ['pulse', entry.date],
+      category: t.search.pulseType,
+      metrics: entry.metrics,
+      highlights: entry.highlights,
     })),
   ];
 

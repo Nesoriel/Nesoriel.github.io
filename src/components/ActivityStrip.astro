@@ -1,0 +1,63 @@
+---
+import { localizedPath, type Locale } from '../config/site';
+
+interface StripItem {
+  date: string;
+  count: number;
+}
+
+interface Props {
+  locale: Locale;
+  items: StripItem[];
+  title: string;
+  description: string;
+  dayLabel: string;
+  compact?: boolean;
+}
+
+const { locale, items, title, description, dayLabel, compact = false } = Astro.props;
+const maxCount = Math.max(...items.map((item) => item.count), 1);
+
+const intensityClass = (count: number) => {
+  if (count <= 0) return 'border-site-border bg-site-bg-muted/40 text-site-subtle';
+  const ratio = count / maxCount;
+  if (ratio >= 0.85) return 'border-site-accent/50 bg-site-accent/25 text-site';
+  if (ratio >= 0.5) return 'border-site-accent/35 bg-site-accent/16 text-site';
+  return 'border-site-cyan/25 bg-site-cyan/12 text-site-muted';
+};
+---
+
+<section class:list={['surface-card rounded-2xl', compact ? 'p-4' : 'p-5 sm:p-6']}>
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-medium uppercase tracking-[0.18em] text-site-subtle">{title}</p>
+      <p class="mt-2 max-w-2xl text-sm leading-7 text-site-muted">{description}</p>
+    </div>
+  </div>
+
+  <div class:list={[compact ? 'mt-4' : 'mt-6', 'grid grid-cols-7 gap-2 sm:gap-3']}>
+    {items.map((item) => {
+      const href = item.count > 0 ? localizedPath(locale, `/pulse/${item.date}/`) : undefined;
+
+      return href ? (
+        <a
+          href={href}
+          class:list={[
+            'focus-ring flex flex-col justify-between rounded-xl border transition hover:-translate-y-0.5 hover:border-site-border-strong',
+            compact ? 'min-h-16 p-2' : 'min-h-24 p-3',
+            intensityClass(item.count),
+          ]}
+          aria-label={`${item.date}: ${item.count} ${dayLabel}`}
+        >
+          <span class="text-[0.7rem] uppercase tracking-[0.14em]">{item.date.slice(5)}</span>
+          <span class="text-lg font-semibold tracking-[-0.03em]">{item.count}</span>
+        </a>
+      ) : (
+        <div class:list={['flex flex-col justify-between rounded-xl border', compact ? 'min-h-16 p-2' : 'min-h-24 p-3', intensityClass(item.count)]} aria-label={`${item.date}: ${item.count} ${dayLabel}`}>
+          <span class="text-[0.7rem] uppercase tracking-[0.14em]">{item.date.slice(5)}</span>
+          <span class="text-lg font-semibold tracking-[-0.03em]">{item.count}</span>
+        </div>
+      );
+    })}
+  </div>
+</section>

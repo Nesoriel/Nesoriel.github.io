@@ -1,10 +1,12 @@
 ---
 import NoteListItem from '../components/NoteListItem.astro';
+import ActivityStrip from '../components/ActivityStrip.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { localizedPath, type Locale } from '../config/site';
 import { getUi } from '../i18n/ui';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublicProjects, getPublishedNotes } from '../lib/content';
+import { formatPulseDate, getLatestPulse, getPulseActivityStrip, localizePulseSummary } from '../lib/pulse';
 
 interface Props {
   locale: Locale;
@@ -16,6 +18,8 @@ const projects = await getPublicProjects(locale);
 const notes = await getPublishedNotes(locale);
 const featuredProjects = projects.filter((project) => project.data.featured).slice(0, 3);
 const recentNotes = notes.slice(0, 3);
+const latestPulse = getLatestPulse();
+const pulseStrip = getPulseActivityStrip(7);
 ---
 
 <BaseLayout locale={locale} title={t.home.title} description={t.home.description} canonicalPath="/">
@@ -60,6 +64,35 @@ const recentNotes = notes.slice(0, 3);
         decoding="async"
       />
     </figure>
+  </section>
+
+  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+    <div class="grid gap-8 rounded-lg border border-site-border bg-site-bg-soft/55 p-6 md:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+      <div>
+        <p class="text-sm uppercase tracking-[0.22em] text-site-accent">{t.home.pulseEyebrow}</p>
+        <h2 class="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{t.home.pulseTitle}</h2>
+        <p class="mt-5 max-w-2xl text-base leading-8 text-site-muted">{t.home.pulseDescription}</p>
+        <a class="focus-ring mt-7 inline-flex rounded-md border border-site-border px-4 py-2.5 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" href={localizedPath(locale, '/pulse/')}>{t.home.pulseLink} →</a>
+      </div>
+      {latestPulse && (
+        <article class="rounded-lg border border-site-border bg-site-bg p-5">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p class="text-xs uppercase tracking-[0.18em] text-site-subtle">{formatPulseDate(latestPulse.date, locale)}</p>
+              <h3 class="mt-2 text-xl font-semibold tracking-[-0.03em]">{t.pulse.latestLabel}</h3>
+            </div>
+            <a class="text-sm text-site-muted hover:text-site" href={localizedPath(locale, `/pulse/${latestPulse.date}/`)}>{t.pulse.detailTitle} →</a>
+          </div>
+          <p class="mt-5 text-sm leading-7 text-site-muted">{localizePulseSummary(latestPulse, locale)}</p>
+          <dl class="mt-6 grid grid-cols-3 gap-3 text-sm">
+            <div class="rounded-xl border border-site-border bg-site-bg-muted/35 p-3"><dt class="text-site-subtle">{t.pulse.metrics.commits}</dt><dd class="mt-1 text-2xl font-semibold">{latestPulse.metrics.commits}</dd></div>
+            <div class="rounded-xl border border-site-border bg-site-bg-muted/35 p-3"><dt class="text-site-subtle">{t.pulse.metrics.pullRequests}</dt><dd class="mt-1 text-2xl font-semibold">{latestPulse.metrics.pullRequests}</dd></div>
+            <div class="rounded-xl border border-site-border bg-site-bg-muted/35 p-3"><dt class="text-site-subtle">{t.pulse.metrics.activeRepositories}</dt><dd class="mt-1 text-2xl font-semibold">{latestPulse.metrics.activeRepositories}</dd></div>
+          </dl>
+          <div class="mt-5"><ActivityStrip locale={locale} items={pulseStrip} title={t.pulse.stripTitle} description={t.pulse.stripDescription} dayLabel={t.pulse.stripDayLabel} compact /></div>
+        </article>
+      )}
+    </div>
   </section>
 
   <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8">

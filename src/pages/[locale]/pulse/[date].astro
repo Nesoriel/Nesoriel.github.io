@@ -1,0 +1,20 @@
+---
+import { supportedLocales, type Locale } from '../../../config/site';
+import { getPulseEntries, type PulseEntry } from '../../../lib/pulse';
+import PulseDetailPage from '../../../views/PulseDetailPage.astro';
+
+export function getStaticPaths() {
+  const entries = getPulseEntries();
+
+  return supportedLocales.flatMap((locale: Locale) =>
+    entries.map((entry: PulseEntry, index: number) => ({
+      params: { locale, date: entry.date },
+      props: { locale, entry, previous: entries[index + 1], next: entries[index - 1] },
+    })),
+  );
+}
+
+const { locale, entry, previous, next } = Astro.props as Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+---
+
+<PulseDetailPage locale={locale} entry={entry} previous={previous} next={next} />

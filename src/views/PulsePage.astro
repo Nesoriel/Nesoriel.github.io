@@ -1,0 +1,106 @@
+---
+import ActivityStrip from '../components/ActivityStrip.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PulseCard from '../components/PulseCard.astro';
+import { localizedPath, type Locale } from '../config/site';
+import { getUi } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatPulseDate, getLatestPulse, getPulseActivityStrip, getPulseEntries, localizePulseSummary } from '../lib/pulse';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getUi(locale);
+const entries = getPulseEntries();
+const latest = getLatestPulse();
+const stripItems = getPulseActivityStrip(7);
+const totalActivitiesLabel = locale === 'zh-cn' ? t.pulse.metrics.totalActivities : t.pulse.metrics.totalActivities.toLowerCase();
+
+const formatGeneratedAt = (value: string) =>
+  new Intl.DateTimeFormat(locale === 'zh-cn' ? 'zh-CN' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+---
+
+<BaseLayout locale={locale} title={t.pulse.title} description={t.pulse.description} canonicalPath="/pulse/">
+  <PageHeader eyebrow={t.pulse.eyebrow} title={t.pulse.heading} description={t.pulse.intro} />
+
+  <section class="mx-auto grid w-full max-w-7xl gap-6 px-5 pb-20 sm:px-6 lg:px-8">
+    <ActivityStrip locale={locale} items={stripItems} title={t.pulse.stripTitle} description={t.pulse.stripDescription} dayLabel={t.pulse.stripDayLabel} />
+
+    {latest && (
+      <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <PulseCard title={`${t.pulse.latestLabel} · ${formatPulseDate(latest.date, locale)}`}>
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <p class="text-sm leading-7 text-site-muted">{localizePulseSummary(latest, locale)}</p>
+              <p class="mt-4 text-sm leading-7 text-site-subtle">{latest.highlights[0] ?? t.pulse.summaryFallback}</p>
+            </div>
+            <dl class="grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4">
+                <dt class="text-site-subtle">{t.pulse.metrics.totalActivities}</dt>
+                <dd class="mt-2 text-2xl font-semibold text-site">{latest.metrics.totalActivities}</dd>
+              </div>
+              <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4">
+                <dt class="text-site-subtle">{t.pulse.metrics.activeRepositories}</dt>
+                <dd class="mt-2 text-2xl font-semibold text-site">{latest.metrics.activeRepositories}</dd>
+              </div>
+              <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4">
+                <dt class="text-site-subtle">{t.pulse.generatedAt}</dt>
+                <dd class="mt-2 text-sm leading-6 text-site">{formatGeneratedAt(latest.generatedAt)}</dd>
+              </div>
+              <div class="rounded-xl border border-site-border bg-site-bg-muted/40 p-4">
+                <dt class="text-site-subtle">{t.pulse.window}</dt>
+                <dd class="mt-2 text-sm leading-6 text-site">{latest.windowHours}h</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="mt-6">
+            <a class="focus-ring inline-flex rounded-xl border border-site-border px-4 py-2.5 text-sm text-site-muted transition hover:border-site-border-strong hover:text-site" href={localizedPath(locale, `/pulse/${latest.date}/`)}>
+              {t.pulse.detailTitle} {t.pulse.forDate} {formatPulseDate(latest.date, locale)}
+            </a>
+          </div>
+        </PulseCard>
+
+        <PulseCard title={t.pulse.highlights}>
+          <ul class="space-y-3 text-sm leading-7 text-site-muted">
+            {latest.highlights.map((highlight) => <li class="rounded-xl border border-site-border bg-site-bg-muted/30 px-4 py-3">{highlight}</li>)}
+          </ul>
+        </PulseCard>
+      </div>
+    )}
+
+    <div class="grid gap-6 lg:grid-cols-5">
+      <div class="grid gap-4 sm:grid-cols-2 lg:col-span-3 xl:grid-cols-3">
+        {entries.map((entry) => (
+          <PulseCard href={localizedPath(locale, `/pulse/${entry.date}/`)} title={formatPulseDate(entry.date, locale)} eyebrow={`${entry.metrics.totalActivities} ${totalActivitiesLabel}`.trim()} compact>
+            <p class="text-sm leading-7 text-site-muted">{localizePulseSummary(entry, locale)}</p>
+            <dl class="mt-4 grid grid-cols-2 gap-3 text-xs text-site-subtle">
+              <div><dt>{t.pulse.metrics.commits}</dt><dd class="mt-1 text-base font-semibold text-site">{entry.metrics.commits}</dd></div>
+              <div><dt>{t.pulse.metrics.pullRequests}</dt><dd class="mt-1 text-base font-semibold text-site">{entry.metrics.pullRequests}</dd></div>
+              <div><dt>{t.pulse.metrics.issues}</dt><dd class="mt-1 text-base font-semibold text-site">{entry.metrics.issues}</dd></div>
+              <div><dt>{t.pulse.metrics.activeRepositories}</dt><dd class="mt-1 text-base font-semibold text-site">{entry.metrics.activeRepositories}</dd></div>
+            </dl>
+          </PulseCard>
+        ))}
+      </div>
+
+      <PulseCard title={t.pulse.metrics.totalActivities} eyebrow={t.pulse.activityTitle}>
+        {latest ? (
+          <dl class="space-y-4 text-sm">
+            <div class="flex items-center justify-between gap-4 border-b border-site-border pb-4"><dt class="text-site-muted">{t.pulse.metrics.commits}</dt><dd class="text-xl font-semibold text-site">{latest.metrics.commits}</dd></div>
+            <div class="flex items-center justify-between gap-4 border-b border-site-border pb-4"><dt class="text-site-muted">{t.pulse.metrics.issues}</dt><dd class="text-xl font-semibold text-site">{latest.metrics.issues}</dd></div>
+            <div class="flex items-center justify-between gap-4 border-b border-site-border pb-4"><dt class="text-site-muted">{t.pulse.metrics.pullRequests}</dt><dd class="text-xl font-semibold text-site">{latest.metrics.pullRequests}</dd></div>
+            <div class="flex items-center justify-between gap-4"><dt class="text-site-muted">{t.pulse.metrics.activeRepositories}</dt><dd class="text-xl font-semibold text-site">{latest.metrics.activeRepositories}</dd></div>
+          </dl>
+        ) : (
+          <p class="text-sm text-site-muted">{t.pulse.summaryFallback}</p>
+        )}
+      </PulseCard>
+    </div>
+  </section>
+</BaseLayout>
